@@ -50,52 +50,74 @@ async def get_manifest():
         "types": ["movie", "series"],
         "resources": ["catalog", "meta", "stream"],
         "catalogs": [
+            # Movie Catalogs
             {
                 "type": "movie",
                 "id": "latest_movies",
                 "name": "Latest",
                 "extra": [
-                    {"name": "genre", "isRequired": False},
+                    {
+                        "name": "genre",
+                        "isRequired": False,
+                        "options": GENRES
+                    },
                     {"name": "skip"}
                 ],
-                "genres": GENRES
+                "extraSupported": ["genre", "skip"]
             },
             {
                 "type": "movie",
                 "id": "top_movies",
                 "name": "Popular",
                 "extra": [
-                    {"name": "genre", "isRequired": False},
+                    {
+                        "name": "genre",
+                        "isRequired": False,
+                        "options": GENRES
+                    },
                     {"name": "skip"},
-                    {"name": "search"}
+                    {"name": "search", "isRequired": False}
                 ],
-                "genres": GENRES
+                "extraSupported": ["genre", "skip", "search"]
             },
+            # Series Catalogs
             {
                 "type": "series",
                 "id": "latest_series",
                 "name": "Latest",
                 "extra": [
-                    {"name": "genre", "isRequired": False},
+                    {
+                        "name": "genre",
+                        "isRequired": False,
+                        "options": GENRES
+                    },
                     {"name": "skip"}
                 ],
-                "genres": GENRES
+                "extraSupported": ["genre", "skip"]
             },
             {
                 "type": "series",
                 "id": "top_series",
                 "name": "Popular",
                 "extra": [
-                    {"name": "genre", "isRequired": False},
+                    {
+                        "name": "genre",
+                        "isRequired": False,
+                        "options": GENRES
+                    },
                     {"name": "skip"},
-                    {"name": "search"}
+                    {"name": "search", "isRequired": False}
                 ],
-                "genres": GENRES
+                "extraSupported": ["genre", "skip", "search"]
             }
         ],
-        "idPrefixes": [""]
-    }
-
+        "idPrefixes": [""],
+        "behaviorHints": {
+            "configurable": False,
+            "configurationRequired": False
+        }
+            }
+    
 @router.get("/catalog/{media_type}/{id}/{extra:path}.json")
 @router.get("/catalog/{media_type}/{id}.json")
 async def get_catalog(media_type: str, id: str, extra: Optional[str] = None):

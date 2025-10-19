@@ -158,7 +158,7 @@ async def fetch_tv_metadata(title, season, episode, encoded_string, year=None, q
     if use_tmdb and tv_details:
         return {
             "tmdb_id": tv_details.id,
-            "imdb_id": "",
+            "imdb_id": tv_details.external_ids.imdb_id,
             "title": tv_details.name,
             "year": getattr(tv_details.first_air_date, "year", 0),
             "rate": getattr(tv_details, "vote_average", 0) or 0,
@@ -234,7 +234,7 @@ async def fetch_movie_metadata(title, encoded_string, year=None, quality=None, d
     if use_tmdb and movie_details:
         return {
             "tmdb_id": movie_details.id,
-            "imdb_id": "",
+            "imdb_id": movie_details.external_ids.imdb_id,
             "title": movie_details.title,
             "year": getattr(movie_details.release_date, "year", 0),
             "rate": getattr(movie_details, "vote_average", 0) or 0,

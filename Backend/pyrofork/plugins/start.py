@@ -2,17 +2,11 @@ from pyrogram import filters, Client, enums
 from Backend.helper.custom_filter import CustomFilters
 from pyrogram.types import Message
 from Backend.config import Telegram
-from urllib.parse import urlparse
 
 @Client.on_message(filters.command('start') & filters.private & CustomFilters.owner, group=10)
 async def send_start_message(client: Client, message: Message):
     try:
-        parsed_url = urlparse(Telegram.BASE_URL)
         base_url = Telegram.BASE_URL
-
-        if parsed_url.hostname.replace('.', '').isdigit() and Telegram.PORT:
-            base_url = f"{parsed_url.scheme}://{parsed_url.hostname}:{Telegram.PORT}"
-
         addon_url = f"{base_url}/stremio/manifest.json"
 
         await message.reply_text(

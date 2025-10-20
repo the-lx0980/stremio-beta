@@ -84,8 +84,19 @@ async def media_streamer(
     req_length = until_bytes - from_bytes + 1
     part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
 
+    # Per-user stream tracking (not per-video)
+    user_key = f"{request.client.host}"
+
     body = tg_connect.yield_file(
-        file_id, index, offset, first_part_cut, last_part_cut, part_count, chunk_size
+        file_id,
+        index,
+        offset,
+        first_part_cut,
+        last_part_cut,
+        part_count,
+        chunk_size,
+        request=request,
+        user_key=user_key
     )
 
     file_name = file_id.file_name or f"{secrets.token_hex(2)}.unknown"
@@ -102,13 +113,13 @@ async def media_streamer(
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Expose-Headers": "Content-Length, Content-Range, Accept-Ranges",
     }
-    
+
     if range_header:
         headers["Content-Range"] = f"bytes {from_bytes}-{until_bytes}/{file_size}"
         status_code = 206
     else:
         status_code = 200
-    
+
     return StreamingResponse(
         status_code=status_code,
         content=body,
